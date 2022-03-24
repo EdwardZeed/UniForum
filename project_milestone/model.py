@@ -7,6 +7,7 @@
 '''
 import view
 import random
+import bcrypt
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -49,19 +50,29 @@ def login_check(username, password):
 
     # By default assume good creds
     login = True
-    
-    if username != "admin": # Wrong Username
-        err_str = "Incorrect Username"
-        login = False
-    
-    if password != "password": # Wrong password
-        err_str = "Incorrect Password"
-        login = False
-        
-    if login: 
-        return page_view("valid", name=username)
-    else:
-        return page_view("invalid", reason=err_str)
+    accountls = []
+    with open("account.txt", 'r') as f:
+        for i in f.readlines():
+            accountls.append(i.strip("\n"))
+
+    # binary_password = password.encode()
+    # hashed_password = bcrypt.hashpw(binary_password, bcrypt.gensalt())
+    # print(hashed_password)
+
+    for i in accountls:
+        if username != i.split(",")[0]:  # Wrong Username
+            err_str = "Incorrect Username"
+            login = False
+
+        print(i.split(",")[1])
+        if not bcrypt.checkpw(password.encode(), i.split(",")[1].encode()):  # Wrong password
+            err_str = "Incorrect Password"
+            login = False
+
+        if login:
+            return page_view("valid", name=username)
+        else:
+            return page_view("invalid", reason=err_str)
 
 #-----------------------------------------------------------------------------
 # About
