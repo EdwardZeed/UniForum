@@ -3,7 +3,7 @@
     You should not have anything beyond basic page loads, handling forms and 
     maybe some simple program logic
 '''
-
+from Crypto.Hash import MD5
 from bottle import route, get, post, error, request, static_file
 
 import model
@@ -100,6 +100,10 @@ def post_login():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+
+    hash = MD5.new()
+    hash.update(password.encode())
+    password = hash.hexdigest()
     
     # Call the appropriate method
     return model.login_check(username, password)

@@ -13,7 +13,7 @@ from sql import SQLDatabase
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
-db = SQLDatabase(database_arg=":memory:")
+db = SQLDatabase(database_arg="identifier.sqlite")
 db.database_setup()
 
 #-----------------------------------------------------------------------------

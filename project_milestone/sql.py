@@ -1,4 +1,5 @@
 import sqlite3
+from Crypto.Hash import MD5
 
 
 # This class is a simple handler for all of our SQL database actions
@@ -6,6 +7,8 @@ import sqlite3
 # These functions from our models
 
 # If you notice anything out of place here, consider it to your advantage and don't spoil the surprise
+import bcrypt
+
 
 class SQLDatabase():
     '''
@@ -57,6 +60,10 @@ class SQLDatabase():
         self.commit()
 
         # Add our admin user
+        hash = MD5.new()
+        hash.update(admin_password.encode())
+        admin_password = hash.hexdigest()
+
         self.add_user('admin', admin_password, admin=1)
 
     # -----------------------------------------------------------------------------
