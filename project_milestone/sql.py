@@ -112,5 +112,15 @@ class SQLDatabase():
 
         return self.cur.fetchall()
 
+    def getUsername(self):
+        sql_query = """
+                    select username
+                    from Users
+        """
+
+        self.execute(sql_query)
+
+        return self.cur.fetchall()
+
 
 

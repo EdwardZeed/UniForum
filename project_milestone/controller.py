@@ -7,6 +7,15 @@ from Crypto.Hash import MD5
 from bottle import route, get, post, error, request, static_file
 
 import model
+import view
+
+from sql import SQLDatabase
+
+
+# Initialise our views, all arguments are defaults for the template
+page_view = view.View()
+db = SQLDatabase(database_arg="identifier.sqlite")
+db.database_setup()
 
 #-----------------------------------------------------------------------------
 # Static file paths
@@ -72,6 +81,41 @@ def get_index():
         Serves the index page
     '''
     return model.index()
+
+# diplay regiter page
+#-----------------------------------------------------------------------------
+@get('/register')
+def get_register_controller():
+    '''
+        get_login
+
+        Serves the login page
+    '''
+    return model.register_form();
+
+# check register
+#-----------------------------------------------------------------------------
+@post('/register')
+def post_register():
+    '''
+        post_login
+
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+
+    hash = MD5.new()
+    hash.update(password.encode())
+    password = hash.hexdigest()
+
+    register = db.add_user(username,password)
+
+    # Call the appropriate method
+    return model.register_check(username)
 
 #-----------------------------------------------------------------------------
 

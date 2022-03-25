@@ -28,6 +28,28 @@ def index():
     return page_view("index")
 
 #-----------------------------------------------------------------------------
+# register
+#-----------------------------------------------------------------------------
+
+def register_form():
+    '''
+        login_form
+        Returns the view for the login_form
+    '''
+    return page_view("register")
+
+def register_check(username):
+    '''
+        login_form
+        Returns the view for the login_form
+    '''
+    register = db.getUsername();
+    if username == register:
+        return page_view("invalid", reason="Invalid username")
+    else:
+        return(page_view("success"))
+
+#-----------------------------------------------------------------------------
 # Login
 #-----------------------------------------------------------------------------
 
