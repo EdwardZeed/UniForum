@@ -31,6 +31,7 @@ class SQLDatabase():
             try:
 
                 out = self.cur.execute(string)
+                print(string)
             except:
                 pass
         return out
@@ -47,6 +48,9 @@ class SQLDatabase():
 
         # Clear the database if needed
         self.execute("DROP TABLE IF EXISTS Users")
+
+        self.execute("DROP TABLE IF EXISTS Messanges")
+
         self.commit()
 
         # Create the users table
@@ -55,16 +59,54 @@ class SQLDatabase():
             username TEXT,
             password TEXT,
             admin INTEGER DEFAULT 0
-        )""")
+        );""")
+
+        self.execute("""CREATE TABLE Messanges(
+                            sender TEXT,
+                            message TEXT
+                        );""")
 
         self.commit()
-
         # Add our admin user
         hash = MD5.new()
         hash.update(admin_password.encode())
         admin_password = hash.hexdigest()
 
-        self.add_user('admin', admin_password, admin=1)
+    # -----------------------------------------------------------------------------
+    #send a message
+    # -----------------------------------------------------------------------------
+    def send_message(self, sender, messange):
+        sql_cmd = """
+                INSERT INTO Messanges
+                VALUES('{sender}', '{message}')
+            """
+        sql_cmd = sql_cmd.format(sender=sender, message=messange)
+        self.execute(sql_cmd)
+        self.commit()
+        return True
+
+    # -----------------------------------------------------------------------------
+    #get all messages
+    # -----------------------------------------------------------------------------
+    def get_messages(self):
+        sql_query = """
+                    select message
+                    from Messanges
+        """
+
+        self.execute(sql_query)
+
+        return self.cur.fetchall()
+
+    def get_sender(self):
+        sql_query = """
+                    select sender
+                    from Messanges
+        """
+
+        self.execute(sql_query)
+
+        return self.cur.fetchall()
 
     # -----------------------------------------------------------------------------
     # User handling

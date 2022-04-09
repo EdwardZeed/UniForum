@@ -1,0 +1,32 @@
+
+
+
+<!--?<p>-->
+<!--?<form action="/send" method="post">-->
+<!--?    Name: ${name}<br>-->
+
+<!--?    Message: <input name="username" type="text" />-->
+
+<!--?    <input value="send" type="submit" />-->
+<!--?</form>-->
+<!--?</p>-->
+
+
+<form action="/send" method="post">
+    <table border="5">
+      <tr>
+        <th>FriendList</th>
+          <th>Entermessage</th>
+          <th>Send</th>
+      </tr>
+      <tr>
+        <td>${name}</td>
+        <td><input type="text" name="message" value="Please Enter Message here"></td>
+        <td><input value="send" type="submit" /></td>
+      </tr>
+    </table>
+</form>
+
+<form action="/get_message" method="post" >
+    <button type="submit">Get Messange</button>
+</form>

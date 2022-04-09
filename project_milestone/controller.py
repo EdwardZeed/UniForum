@@ -118,6 +118,66 @@ def post_register():
     return model.register_check(username)
 
 #-----------------------------------------------------------------------------
+# Send_message
+#-----------------------------------------------------------------------------
+@get('/send')
+def get_register_controller():
+    '''
+        get_login
+
+        Serves the login page
+    '''
+    return model.send_message_form();
+
+@post('/send')
+def send_message():
+    '''
+        post_login
+
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+
+    sender = model.get_sender()
+    message = request.forms.get('message')
+    print("This is sender: ",sender)
+    print("This is message",message)
+
+    register = db.send_message(sender,message)
+    print(register)
+    # Call the appropriate method
+    return model.send_success()
+
+#-----------------------------------------------------------------------------
+# Send_message
+#-----------------------------------------------------------------------------
+@post('/get_message')
+def get_message():
+    '''
+        post_login
+
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    msg = db.get_messages()
+    # Call the appropriate method
+    return model.get_message(msg)
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------
 
 # Display the login page
 @get('/login')

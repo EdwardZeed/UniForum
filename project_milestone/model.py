@@ -15,6 +15,7 @@ from sql import SQLDatabase
 page_view = view.View()
 db = SQLDatabase(database_arg="identifier.sqlite")
 db.database_setup()
+user_name_global = "null"
 
 #-----------------------------------------------------------------------------
 # Index
@@ -48,6 +49,53 @@ def register_check(username):
         return page_view("invalid", reason="Invalid username")
     else:
         return(page_view("success"))
+
+#-----------------------------------------------------------------------------
+# Send Message
+#-----------------------------------------------------------------------------
+def send_message_form():
+    '''
+        send_message
+        Sends a message to the database
+
+        :: username :: The username
+        :: message :: The message
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    return page_view("friend-list")
+
+def set_user_name(username):
+    global user_name_global
+    user_name_global = username
+
+def get_sender():
+    '''
+        send_message
+        Sends a message to the database
+
+        :: username :: The username
+        :: message :: The message
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    return user_name_global
+
+def send_success():
+    return page_view("success_send")
+
+#-----------------------------------------------------------------------------
+# Get_message
+#-----------------------------------------------------------------------------
+def get_message(msg):
+    '''
+        get_message
+        Returns the view for the get_message
+    '''
+    if user_name_global == db.get_sender()[0]:
+        return page_view("get-message", sender = "", message="You have no messages")
+    else:
+        return page_view("get_message", sender =db.get_sender()[0], message=msg)
 
 #-----------------------------------------------------------------------------
 # Login
@@ -102,8 +150,16 @@ def login_check(username, password):
 
     login = db.check_credentials(username, password)
     err_str = "a"
+    username_ls = db.getUsername()
+
     if login:
-        return page_view("valid", name=username)
+        for i in username_ls:
+            if username != i[0]:
+                name_l = i[0]
+        set_user_name(username)
+        if(name_l == None):
+            name_l = "null"
+        return page_view("friend-list", name=name_l)
     else:
         return page_view("invalid", reason=err_str)
 
