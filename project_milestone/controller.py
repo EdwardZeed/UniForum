@@ -8,6 +8,7 @@ from bottle import route, get, post, error, request, static_file
 
 import model
 import view
+import rsa
 
 from sql import SQLDatabase
 
@@ -112,10 +113,10 @@ def post_register():
     hash.update(password.encode())
     password = hash.hexdigest()
 
-    register = db.add_user(username,password)
+
 
     # Call the appropriate method
-    return model.register_check(username)
+    return model.register_check(username, password)
 
 #-----------------------------------------------------------------------------
 # Send_message
@@ -145,10 +146,10 @@ def send_message():
     print("This is sender: ",sender)
     print("This is message",message)
 
-    register = db.send_message(sender,message)
-    print(register)
-    # Call the appropriate method
-    return model.send_success()
+
+
+    # pass the receiver and message to the model
+    return model.send_success("Frank", message)
 
 #-----------------------------------------------------------------------------
 # Send_message
@@ -163,18 +164,9 @@ def get_message():
     '''
 
     # Handle the form processing
-    msg = db.get_messages()
+
     # Call the appropriate method
-    return model.get_message(msg)
-
-
-
-
-
-
-
-
-
+    return model.get_message()
 
 
 #-----------------------------------------------------------------------------

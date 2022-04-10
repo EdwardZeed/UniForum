@@ -29,9 +29,7 @@ class SQLDatabase():
         out = None
         for string in sql_string.split(";"):
             try:
-
                 out = self.cur.execute(string)
-                print(string)
             except:
                 pass
         return out
@@ -58,12 +56,17 @@ class SQLDatabase():
             Id INT,
             username TEXT,
             password TEXT,
-            admin INTEGER DEFAULT 0
+            admin INTEGER DEFAULT 0,
+            pubkey TEXT,
+            prikey TEXT
         );""")
 
         self.execute("""CREATE TABLE Messanges(
                             sender TEXT,
-                            message TEXT
+                            receiver TEXT,
+                            message TEXT,
+                            key TEXT, 
+                            signature TEXT
                         );""")
 
         self.commit()
@@ -71,16 +74,17 @@ class SQLDatabase():
         hash = MD5.new()
         hash.update(admin_password.encode())
         admin_password = hash.hexdigest()
+        self.add_user('admin', admin_password)
 
     # -----------------------------------------------------------------------------
     #send a message
     # -----------------------------------------------------------------------------
-    def send_message(self, sender, messange):
+    def send_message(self, sender, receiver, messange, key, signature):
         sql_cmd = """
                 INSERT INTO Messanges
-                VALUES('{sender}', '{message}')
+                VALUES('{sender}', '{receiver}', '{message}', '{key}', '{signature}')
             """
-        sql_cmd = sql_cmd.format(sender=sender, message=messange)
+        sql_cmd = sql_cmd.format(sender=sender, receiver=receiver ,message=messange, key=key, signature=signature)
         self.execute(sql_cmd)
         self.commit()
         return True
@@ -90,7 +94,7 @@ class SQLDatabase():
     # -----------------------------------------------------------------------------
     def get_messages(self):
         sql_query = """
-                    select message
+                    select message, key, sender, receiver
                     from Messanges
         """
 
@@ -113,13 +117,13 @@ class SQLDatabase():
     # -----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, admin=0):
+    def add_user(self, username, password, pubkey=None, prikey=None, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin})
+                VALUES({id}, '{username}', '{password}', {admin}, '{pubkey}', '{prikey}')
             """
 
-        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin)
+        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin, pubkey=pubkey, prikey=prikey)
         self.id += 1
         self.execute(sql_cmd)
         self.commit()
@@ -164,5 +168,34 @@ class SQLDatabase():
 
         return self.cur.fetchall()
 
+    def getPublicKey(self, username):
+        sql_query = """
+                        select pubkey
+                        from Users
+                        where username = '{username}'
+                    """
+
+        self.execute(sql_query.format(username=username))
+        return self.cur.fetchone()
+
+    def getPrivateKey(self, username):
+        sql_query = """
+                    select prikey
+                    from Users
+                    where username = '{username}'
+                """
+
+        self.execute(sql_query.format(username=username))
+        return self.cur.fetchone()
+
+    def getSignature(self, username):
+        sql_query = """
+                    select signature
+                    from Messanges
+                    where sender = '{username}'
+                """
+
+        self.execute(sql_query.format(username=username))
+        return self.cur.fetchone()
 
 
