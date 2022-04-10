@@ -11,17 +11,26 @@
 <!--?</form>-->
 <!--?</p>-->
 
+<table border="5">
+      <tr>
+        <th>FriendList</th>
+      </tr>
+      <tr>
+        <td>${name}</td>
+      </tr>
+</table>
+
 
 <form action="/send" method="post">
     <table border="5">
       <tr>
-        <th>FriendList</th>
           <th>Entermessage</th>
+        <th>receiver</th>
           <th>Send</th>
       </tr>
       <tr>
-        <td>${name}</td>
         <td><input type="text" name="message" value="Please Enter Message here"></td>
+        <td><input type="text" name="receiver" value="Please Enter the receiver here"></td>
         <td><input value="send" type="submit" /></td>
 
       </tr>

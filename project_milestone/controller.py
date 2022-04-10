@@ -143,13 +143,14 @@ def send_message():
 
     sender = model.get_sender()
     message = request.forms.get('message')
-    print("This is sender: ",sender)
-    print("This is message",message)
+    receiver = request.forms.get('receiver')
+    # print("This is sender: ",sender)
+    # print("This is message",message)
 
 
 
     # pass the receiver and message to the model
-    return model.send_success("Frank", message)
+    return model.send_success(receiver, message)
 
 #-----------------------------------------------------------------------------
 # Send_message
