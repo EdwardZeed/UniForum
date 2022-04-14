@@ -1,16 +1,24 @@
-
+<center>
 Login with a username and password
-</p>
+</p >
 <p>
-<form action="/login" method="post">
+<form action="/login" method="post" onsubmit="return checkForm()">
     Username: <input name="username" type="text" />
 </br>
-    Password: <input name="password" type="password" />
+    Password: <input name="password" id="password" type="password" />
 </br>
     <input value="Login" type="submit" />
 </form>
-</p>
+</p >
 </center>
 
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
 
-
+<script>
+    function checkForm() {
+        let pwd = document.getElementById('password');
+        console.log(md5(pwd.value));
+        pwd.value = md5(pwd.value);
+        return true;
+    }
+</script>

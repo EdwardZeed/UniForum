@@ -1,1 +1,1 @@
-//window.alert("JS TEST!")
+console.log("hello world")

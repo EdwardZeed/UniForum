@@ -108,21 +108,25 @@ def post_register():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    public_key = request.forms.get('pubkey')
+    print(username)
+    print(password)
+    print(public_key)
 
-    hash = MD5.new()
-    hash.update(password.encode())
-    password = hash.hexdigest()
+    # hash = MD5.new()
+    # hash.update(password.encode())
+    # password = hash.hexdigest()
 
 
 
     # Call the appropriate method
-    return model.register_check(username, password)
+    return model.register_check(username, password, public_key)
 
 #-----------------------------------------------------------------------------
 # Send_message
 #-----------------------------------------------------------------------------
 @get('/send')
-def get_register_controller():
+def get_send_controller():
     '''
         get_login
 
@@ -144,13 +148,19 @@ def send_message():
     sender = model.get_sender()
     message = request.forms.get('message')
     receiver = request.forms.get('receiver')
+    digital_signature = request.forms.get('digital_signature')
+
+    print(digital_signature)
+    print(receiver)
+    print(message)
+
     # print("This is sender: ",sender)
     # print("This is message",message)
 
 
 
     # pass the receiver and message to the model
-    return model.send_success(receiver, message)
+    return model.send_success(receiver, message, digital_signature)
 
 #-----------------------------------------------------------------------------
 # Send_message
@@ -197,10 +207,11 @@ def post_login():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    public_key = request.forms.get('pk')
 
-    hash = MD5.new()
-    hash.update(password.encode())
-    password = hash.hexdigest()
+    # hash = MD5.new()
+    # hash.update(password.encode())
+    # password = hash.hexdigest()
     
     # Call the appropriate method
     return model.login_check(username, password)

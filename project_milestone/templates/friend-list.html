@@ -22,6 +22,7 @@
 
 
 <form action="/send" method="post">
+
     <table border="5">
       <tr>
           <th>Entermessage</th>
@@ -29,13 +30,19 @@
           <th>Send</th>
       </tr>
       <tr>
-        <td><input type="text" name="message" value="Please Enter Message here"></td>
-        <td><input type="text" name="receiver" value="Please Enter the receiver here"></td>
-        <td><input value="send" type="submit" /></td>
-
+        <td><input type="text" id="msg" name="message" placeholder="please enter message here"></td>
+        <input hidden type="text" id="pubkey" name="pubkey" placeholder="This is Public Key">
+        <td><input type="text" name="receiver" placeholder="Please Enter the receiver here"></td>
+        <input hidden type="text" name="digital_signature" id="ds">
+        <td><input value="send" id="btn1" type="submit" /></td>
+        <script src="js/PKE_module.js"></script>
       </tr>
     </table>
 </form>
+
+
+
+
 
 <form action="/get_message" method="post" >
     <button type="submit">Get Messange</button>

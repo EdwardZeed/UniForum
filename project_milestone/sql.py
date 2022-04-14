@@ -47,7 +47,7 @@ class SQLDatabase():
         # Clear the database if needed
         self.execute("DROP TABLE IF EXISTS Users")
 
-        self.execute("DROP TABLE IF EXISTS Messanges")
+        self.execute("DROP TABLE IF EXISTS Messages")
 
         self.commit()
 
@@ -57,15 +57,13 @@ class SQLDatabase():
             username TEXT,
             password TEXT,
             admin INTEGER DEFAULT 0,
-            pubkey TEXT,
-            prikey TEXT
+            pubkey TEXT
         );""")
 
-        self.execute("""CREATE TABLE Messanges(
+        self.execute("""CREATE TABLE Messages(
                             sender TEXT,
                             receiver TEXT,
                             message TEXT,
-                            key TEXT, 
                             signature TEXT
                         );""")
 
@@ -75,16 +73,18 @@ class SQLDatabase():
         hash.update(admin_password.encode())
         admin_password = hash.hexdigest()
         self.add_user('admin', admin_password)
+        self.add_user("Edward", "c4ca4238a0b923820dcc509a6f75849b")
+        self.add_user("Frank", "c4ca4238a0b923820dcc509a6f75849b")
 
     # -----------------------------------------------------------------------------
     #send a message
     # -----------------------------------------------------------------------------
-    def send_message(self, sender, receiver, messange, key, signature):
+    def send_message(self, sender, receiver, message, signature):
         sql_cmd = """
-                INSERT INTO Messanges
-                VALUES('{sender}', '{receiver}', '{message}', '{key}', '{signature}')
+                INSERT INTO Messages
+                VALUES('{sender}', '{receiver}', '{message}', '{signature}')
             """
-        sql_cmd = sql_cmd.format(sender=sender, receiver=receiver ,message=messange, key=key, signature=signature)
+        sql_cmd = sql_cmd.format(sender=sender, receiver=receiver ,message=message, signature=signature)
         self.execute(sql_cmd)
         self.commit()
         return True
@@ -95,7 +95,7 @@ class SQLDatabase():
     def get_messages(self):
         sql_query = """
                     select message, key, sender, receiver
-                    from Messanges
+                    from Messages
         """
 
         self.execute(sql_query)
@@ -105,7 +105,7 @@ class SQLDatabase():
     def get_sender(self):
         sql_query = """
                     select sender
-                    from Messanges
+                    from Messages
         """
 
         self.execute(sql_query)
@@ -117,13 +117,13 @@ class SQLDatabase():
     # -----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, pubkey=None, prikey=None, admin=0):
+    def add_user(self, username, password, pubkey=None, admin=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{pubkey}', '{prikey}')
+                VALUES({id}, '{username}', '{password}', {admin}, '{pubkey}')
             """
 
-        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin, pubkey=pubkey, prikey=prikey)
+        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin, pubkey=pubkey)
         self.id += 1
         self.execute(sql_cmd)
         self.commit()
@@ -178,20 +178,11 @@ class SQLDatabase():
         self.execute(sql_query.format(username=username))
         return self.cur.fetchone()
 
-    def getPrivateKey(self, username):
-        sql_query = """
-                    select prikey
-                    from Users
-                    where username = '{username}'
-                """
-
-        self.execute(sql_query.format(username=username))
-        return self.cur.fetchone()
 
     def getSignature(self, username):
         sql_query = """
                     select signature
-                    from Messanges
+                    from Messages
                     where sender = '{username}'
                 """
 

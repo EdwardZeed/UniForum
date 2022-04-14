@@ -43,7 +43,7 @@ def register_form():
     '''
     return page_view("register")
 
-def register_check(username, password):
+def register_check(username, password, pub):
     '''
         login_form
         Returns the view for the login_form
@@ -52,11 +52,11 @@ def register_check(username, password):
     for name in register:
         if username == name[0]:
             return page_view("invalid", reason="username already exists")
-    public_key, private_key = rsa.newkeys(1024)
-    pub = public_key.save_pkcs1().decode()
-    priv = private_key.save_pkcs1().decode()
+    # public_key, private_key = rsa.newkeys(1024)
+    # pub = public_key.save_pkcs1().decode()
+    # priv = private_key.save_pkcs1().decode()
 
-    db.add_user(username, password,pub, priv)
+    db.add_user(username, password,pub)
     return (page_view("success"))
 
 
@@ -91,31 +91,31 @@ def get_sender():
     '''
     return user_name_global
 
-def send_success(receiver, message):
+def send_success(receiver, message, signature):
 
     #encrypt message with symmetric key
-    public_key = db.getPublicKey(receiver)
-    public_key = public_key[0]
-    symmetric_key = os.urandom(16)
-    cipher = AES.new(symmetric_key, AES.MODE_ECB)
-    message = bytes(message, 'utf-8')
-    while len(message) % 16 != 0:
-        message += b'\0'
-    cipherText = cipher.encrypt(message)
-
-    # encrypt symmetric key with receiver's public key
-    symmetric_key = rsa.encrypt(symmetric_key, rsa.PublicKey.load_pkcs1(public_key))
-    str_ciperText = base64.encodebytes(cipherText).decode()
-    str_symmetric_key = base64.encodebytes(symmetric_key).decode()
+    # public_key = db.getPublicKey(receiver)
+    # public_key = public_key[0]
+    # symmetric_key = os.urandom(16)
+    # cipher = AES.new(symmetric_key, AES.MODE_ECB)
+    # message = bytes(message, 'utf-8')
+    # while len(message) % 16 != 0:
+    #     message += b'\0'
+    # cipherText = cipher.encrypt(message)
+    #
+    # # encrypt symmetric key with receiver's public key
+    # symmetric_key = rsa.encrypt(symmetric_key, rsa.PublicKey.load_pkcs1(public_key))
+    # str_ciperText = base64.encodebytes(cipherText).decode()
+    # str_symmetric_key = base64.encodebytes(symmetric_key).decode()
 
     #generate digital signature
-    private_key = db.getPrivateKey(user_name_global)
-    private_key = private_key[0]
-    private_key = rsa.PrivateKey.load_pkcs1(private_key)
-    signature = rsa.sign(cipherText, private_key, 'SHA-1')
-    str_signature = base64.encodebytes(signature).decode()
+    # private_key = db.getPrivateKey(user_name_global)
+    # private_key = private_key[0]
+    # private_key = rsa.PrivateKey.load_pkcs1(private_key)
+    # signature = rsa.sign(cipherText, private_key, 'SHA-1')
+    # str_signature = base64.encodebytes(signature).decode()
 
-    db.send_message(user_name_global,receiver, str_ciperText, str_symmetric_key, str_signature)
+    db.send_message(user_name_global,receiver, message, signature)
 
     return page_view("success_send")
 
@@ -133,24 +133,24 @@ def get_message():
         try:
             # verify signature
             msg = db.get_messages()
-            msg_text = msg[len(msg) - 1][0]
-            symmetric_key = msg[len(msg) - 1][1]
-            sender = msg[len(msg) - 1][2]
-
-            signature = db.getSignature(sender)
-            signature = signature[0]
-            signature = base64.decodebytes(signature.encode())
-            sender_public_key = db.getPublicKey(sender)[0]
-            msg_bytes = base64.decodebytes(msg_text.encode())
-            rsa.verify(msg_bytes, signature, rsa.PublicKey.load_pkcs1(sender_public_key))
+            # msg_text = msg[len(msg) - 1][0]
+            # symmetric_key = msg[len(msg) - 1][1]
+            # sender = msg[len(msg) - 1][2]
+            #
+            # signature = db.getSignature(sender)
+            # signature = signature[0]
+            # signature = base64.decodebytes(signature.encode())
+            # sender_public_key = db.getPublicKey(sender)[0]
+            # msg_bytes = base64.decodebytes(msg_text.encode())
+            # rsa.verify(msg_bytes, signature, rsa.PublicKey.load_pkcs1(sender_public_key))
 
             # decrypt message
-            private_key = rsa.PrivateKey.load_pkcs1((db.getPrivateKey(user_name_global)[0]).encode())
-            symmetric_key = rsa.decrypt(base64.decodebytes(symmetric_key.encode()), private_key)
-            cipher = AES.new(symmetric_key, AES.MODE_ECB)
-            msg_text = cipher.decrypt(msg_bytes).decode()
-            msg_text = msg_text.rstrip('\0')
-            return page_view("get_message", sender =db.get_sender()[0], message=msg_text)
+            # private_key = rsa.PrivateKey.load_pkcs1((db.getPrivateKey(user_name_global)[0]).encode())
+            # symmetric_key = rsa.decrypt(base64.decodebytes(symmetric_key.encode()), private_key)
+            # cipher = AES.new(symmetric_key, AES.MODE_ECB)
+            # msg_text = cipher.decrypt(msg_bytes).decode()
+            # msg_text = msg_text.rstrip('\0')
+            return page_view("get_message", sender =db.get_sender()[0], message=msg)
         except:
             return page_view("get-message", sender = "", message="the message might be corrupted")
 

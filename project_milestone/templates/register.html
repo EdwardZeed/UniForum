@@ -1,12 +1,27 @@
+<center>
 Register with a username and password
-</p>
 <p>
-<form action="/register" method="post">
+<form action="/register" method="post" onsubmit="return checkForm()">
+<input hidden type="text" id="pubkey" name="pubkey" placeholder="This is Public Key">
     Username: <input name="username" type="text" />
 </br>
-    Password: <input name="password" type="password" />
+    Password: <input name="password" id="password" type="password" />
 </br>
-    <input value="Register" type="submit" />
+    <input hidden name="meaningless" id="msg" type="password" />
+    <input hidden id="btn1" value="meaningless" type="text" />
+    <input id="btn2" value="Register" type="submit" />
+    <script src="js/PKE_module.js"></script>
 </form>
-</p>
+</p >
 </center>
+
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+
+<script>
+    function checkForm() {
+        let pwd = document.getElementById('password');
+        console.log(md5(pwd.value));
+        pwd.value = md5(pwd.value);
+        return true;
+    }
+</script>
