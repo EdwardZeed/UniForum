@@ -3,11 +3,12 @@ Login with a username and password
 </p >
 <p>
 <form action="/login" method="post" onsubmit="return checkForm()">
-    Username: <input name="username" type="text" />
+    Username: <input name="username" type="text" id="username" />
 </br>
     Password: <input name="password" id="password" type="password" />
 </br>
-    <input value="Login" type="submit" />
+    <input value="login" type="submit" id="login" />
+    <script src="js/compiled.pwEncryption.js"></script>
 </form>
 </p >
 </center>
@@ -16,9 +17,11 @@ Login with a username and password
 
 <script>
     function checkForm() {
-        let pwd = document.getElementById('password');
-        console.log(md5(pwd.value));
-        pwd.value = md5(pwd.value);
-        return true;
+        // let pwd = document.getElementById('password');
+        // console.log(md5(pwd.value));
+        // pwd.value = md5(pwd.value);
+        // return true;
     }
+
+
 </script>

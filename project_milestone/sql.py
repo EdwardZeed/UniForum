@@ -69,12 +69,11 @@ class SQLDatabase():
 
         self.commit()
         # Add our admin user
-        hash = MD5.new()
-        hash.update(admin_password.encode())
-        admin_password = hash.hexdigest()
-        self.add_user('admin', admin_password)
-        self.add_user("Edward", "c4ca4238a0b923820dcc509a6f75849b")
-        self.add_user("Frank", "c4ca4238a0b923820dcc509a6f75849b")
+        # hash = MD5.new()
+        # hash.update(admin_password.encode())
+        # admin_password = hash.hexdigest()
+        # self.add_user('admin', admin_password)
+
 
     # -----------------------------------------------------------------------------
     #send a message
@@ -92,12 +91,13 @@ class SQLDatabase():
     # -----------------------------------------------------------------------------
     #get all messages
     # -----------------------------------------------------------------------------
-    def get_messages(self):
+    def get_messages(self, receiver):
         sql_query = """
-                    select message, key, sender, receiver
+                    select message, sender, receiver, signature
                     from Messages
+                    where receiver = '{receiver}'
         """
-
+        sql_query = sql_query.format(receiver=receiver)
         self.execute(sql_query)
 
         return self.cur.fetchall()

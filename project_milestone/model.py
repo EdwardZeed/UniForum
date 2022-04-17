@@ -9,7 +9,7 @@ import rsa
 
 import view
 import random
-from Crypto.Cipher import AES
+
 import base64, os
 import bcrypt
 from sql import SQLDatabase
@@ -20,6 +20,8 @@ page_view = view.View()
 db = SQLDatabase(database_arg="identifier.sqlite")
 db.database_setup()
 user_name_global = "null"
+
+private_key = "-----BEGIN RSA PRIVATE KEY-----\n" +"MIIBPAIBAAJBAJXPd3FZqlVFx5smdsXbEdNY2WyOkpcAetTj+XeO1PzWs/UYT9nY\n" +"dkyJ3ff4lyQP/J4E1q7AsbjiqiUbUKx3jYECAwEAAQJAdnYyvggoP/vIxi/ZNcVw\n" +"SA53B3eKBSvU9Wk8SEVCDRK1bPKQy3z+zneQ8lSinXM0ovBvQIaFNa/8PfwpRapo\n" +"0QIjANjpe2E8MFGAlqomiVKKpH/D0d0tGWMnv2CXdZ1CjjAfku0CHwCwznlAv5yW\n" +"NF1Rqs4y1bZcJHSLmvZOHDYyvRKMLmUCIneBc3tn2MseiGOoJaI3Rlgp/9bWgRUz\n" +"Eepap+8DeykiTCUCHwCgDko2Ez/tufnAtJ915YHwaBAZUW8nxuJJjF/+BwECIkIa\n" +"fp+a03yUtkixbky2LiC802zWnoMjzn+8zAkTYXpSc4s=\n" +"-----END RSA PRIVATE KEY-----"
 
 #-----------------------------------------------------------------------------
 # Index
@@ -55,9 +57,12 @@ def register_check(username, password, pub):
     # public_key, private_key = rsa.newkeys(1024)
     # pub = public_key.save_pkcs1().decode()
     # priv = private_key.save_pkcs1().decode()
-
+    # private_key = "-----BEGIN RSA PRIVATE KEY-----\n" + "MIIBPAIBAAJBAJXPd3FZqlVFx5smdsXbEdNY2WyOkpcAetTj+XeO1PzWs/UYT9nY\n" + "dkyJ3ff4lyQP/J4E1q7AsbjiqiUbUKx3jYECAwEAAQJAdnYyvggoP/vIxi/ZNcVw\n" + "SA53B3eKBSvU9Wk8SEVCDRK1bPKQy3z+zneQ8lSinXM0ovBvQIaFNa/8PfwpRapo\n" + "0QIjANjpe2E8MFGAlqomiVKKpH/D0d0tGWMnv2CXdZ1CjjAfku0CHwCwznlAv5yW\n" + "NF1Rqs4y1bZcJHSLmvZOHDYyvRKMLmUCIneBc3tn2MseiGOoJaI3Rlgp/9bWgRUz\n" + "Eepap+8DeykiTCUCHwCgDko2Ez/tufnAtJ915YHwaBAZUW8nxuJJjF/+BwECIkIa\n" + "fp+a03yUtkixbky2LiC802zWnoMjzn+8zAkTYXpSc4s=\n" + "-----END RSA PRIVATE KEY-----"
+    #
+    # private_key = rsa.PrivateKey.load_pkcs1(private_key)
+    # password = rsa.decrypt(base64.b64decode(password.encode()), private_key)
     db.add_user(username, password,pub)
-    return (page_view("success"))
+    return page_view("success", username=username)
 
 
 #-----------------------------------------------------------------------------
@@ -91,7 +96,7 @@ def get_sender():
     '''
     return user_name_global
 
-def send_success(receiver, message, signature):
+def send_success(sender, receiver, message, signature):
 
     #encrypt message with symmetric key
     # public_key = db.getPublicKey(receiver)
@@ -115,7 +120,7 @@ def send_success(receiver, message, signature):
     # signature = rsa.sign(cipherText, private_key, 'SHA-1')
     # str_signature = base64.encodebytes(signature).decode()
 
-    db.send_message(user_name_global,receiver, message, signature)
+    db.send_message(sender,receiver, message, signature)
 
     return page_view("success_send")
 
@@ -132,7 +137,7 @@ def get_message():
     else:
         try:
             # verify signature
-            msg = db.get_messages()
+            msg = db.get_messages()[0]
             # msg_text = msg[len(msg) - 1][0]
             # symmetric_key = msg[len(msg) - 1][1]
             # sender = msg[len(msg) - 1][2]
@@ -205,6 +210,10 @@ def login_check(username, password):
     #     else:
     #         return page_view("invalid", reason=err_str)
 
+    # private_key = "-----BEGIN RSA PRIVATE KEY-----\n" + "MIIBPAIBAAJBAJXPd3FZqlVFx5smdsXbEdNY2WyOkpcAetTj+XeO1PzWs/UYT9nY\n" + "dkyJ3ff4lyQP/J4E1q7AsbjiqiUbUKx3jYECAwEAAQJAdnYyvggoP/vIxi/ZNcVw\n" + "SA53B3eKBSvU9Wk8SEVCDRK1bPKQy3z+zneQ8lSinXM0ovBvQIaFNa/8PfwpRapo\n" + "0QIjANjpe2E8MFGAlqomiVKKpH/D0d0tGWMnv2CXdZ1CjjAfku0CHwCwznlAv5yW\n" + "NF1Rqs4y1bZcJHSLmvZOHDYyvRKMLmUCIneBc3tn2MseiGOoJaI3Rlgp/9bWgRUz\n" + "Eepap+8DeykiTCUCHwCgDko2Ez/tufnAtJ915YHwaBAZUW8nxuJJjF/+BwECIkIa\n" + "fp+a03yUtkixbky2LiC802zWnoMjzn+8zAkTYXpSc4s=\n" + "-----END RSA PRIVATE KEY-----"
+    #
+    # private_key = rsa.PrivateKey.load_pkcs1(private_key)
+    # password = rsa.decrypt(base64.b64decode(password.encode()), private_key)
     login = db.check_credentials(username, password)
     err_str = "a"
     username_ls = db.getUsername()
@@ -216,7 +225,24 @@ def login_check(username, password):
         set_user_name(username)
         if(name_l == None):
             name_l = "null"
-        return page_view("friend-list", name=name_l)
+
+        message = db.get_messages(username)
+        message_cipher = None
+        digital_signature = None
+        friend_public_key = db.getPublicKey(name_l)[0]
+        if len(message) != 0:
+            message_cipher = message[len(message)-1][0]
+            digital_signature = message[len(message)-1][3]
+            print(digital_signature)
+            print(message)
+            # if message[len(message) - 1][1] == user_name_global:
+            #     message_cipher = "You have no messages"
+
+        else:
+            print("no message")
+            return page_view("friend-list", name=name_l, current_user=user_name_global,public_key=db.getPublicKey(name_l)[0],digital_signature=digital_signature, friend_public_key=friend_public_key, message="")
+
+        return page_view("friend-list", name=name_l, current_user=user_name_global, public_key=db.getPublicKey(name_l)[0], message=message_cipher, digital_signature=digital_signature, friend_public_key=friend_public_key)
     else:
         return page_view("invalid", reason=err_str)
 

@@ -1,46 +1,59 @@
 const nodeRSA = require('node-rsa')
 
-// 生成一个1024长度的密钥对
-const key = new nodeRSA({ b: 1024 })
-const publicKey = key.exportKey('pkcs8-public') // 公钥
-const privateKey = key.exportKey('pkcs8-private') // 私钥
-const txt = '123'
 
-// 使用公钥加密
-function encrypt(data) {
-  const pubKey = new nodeRSA(publicKey, 'pkcs8-public')
-  return pubKey.encrypt(Buffer.from(data), 'base64')
+
+const friend = document.getElementById('friend')
+
+const received_message_title = document.getElementById('received_message_title')
+const received_message = document.getElementById('received_message')
+
+const digital_signature = document.getElementById('ds')
+if (received_message.innerHTML != ""){
+    console.log("have message")
+    const sender_public_key = document.getElementById('friend_public_key').innerHTML
+    const digital_signature = document.getElementById('ds')
+    const verify = new nodeRSA(sender_public_key)
+    if (verify.verify(Buffer.from(received_message.innerHTML), digital_signature.value, 'utf8', 'hex')){
+        console.log('verify success')
+        const current_user_private_key = localStorage.getItem(sessionStorage.getItem('username')+'_private_key')
+        const decrypt = new nodeRSA(current_user_private_key)
+        const decrypt_msg = decrypt.decrypt(received_message.innerHTML, 'utf8')
+        received_message.innerHTML = decrypt_msg
+    }
+    else{
+        console.log('verify fail')
+    }
+}
+else{
+    received_message_title.setAttribute('hidden', 'true')
+    received_message.setAttribute('hidden', 'true')
+}
+console.log(friend.innerHTML)
+
+const friend_public_key = document.getElementById('friend_public_key')
+
+try{
+    const send_btn = document.getElementById('send')
+    if (send_btn != null){
+        send_btn.addEventListener('click', () => {
+            const msg = document.getElementById('msg')
+            console.log(friend_public_key.innerHTML)
+            const encrypt = new nodeRSA(friend_public_key.innerHTML, 'pkcs8-public')
+            const encrypt_msg = encrypt.encrypt(msg.value, 'base64')
+            msg.value = encrypt_msg
+
+            const current_user = sessionStorage.getItem('username')
+            const current_user_private_key = localStorage.getItem(current_user+'_private_key')
+
+            const signature = new nodeRSA(current_user_private_key)
+            const sign = signature.sign(Buffer.from(encrypt_msg), 'hex')
+            document.getElementById('ds').value = sign
+            document.getElementById('sender').value = current_user
+
+        })
+    }
+}
+catch(err){
+    console.log("message send error")
 }
 
-// 使用私钥解密
-function decrypt(data) {
-  const priKey = new nodeRSA(privateKey, 'pkcs8-private')
-  return priKey.decrypt(Buffer.from(data, 'base64'), 'utf8')
-}
-
-const sign = encrypt(txt)
-const _src = decrypt(sign)
-
-console.log('加密：', sign)
-console.log('解密：', _src)
-/*
-加密： fBaBFVPv+96I/r6a2tfPbYWa0yjgJKQ+K2/E9obGNo0dYBOSBzW2PgnPOHX+/pq0wUZPxJzcwt5YcMtOsUNuZAYpaPZJ9o6IOEKj823HBNbyerDMUfU3rINCk2FilRuxFpQPmBZTbSvSumKligdtsh1Vz02DwdRgbJHp5bm4Hjk=
-解密： 123
-*/
-
-// 使用私钥对消息签名
-function signRSA(data) {
-  const priKey = new nodeRSA(privateKey, 'pkcs8-private')
-  return priKey.sign(Buffer.from(data), 'hex')
-}
-
-// 使用公钥验证签名
-function verifyRSA(decrypt, signs) {
-  const pubKey = new nodeRSA(publicKey, 'pkcs8-public')
-  return pubKey.verify(Buffer.from(decrypt), signs, 'utf8', 'hex')
-}
-
-const signature = signRSA(sign)
-
-console.log('私钥签名：' + signature)
-console.log('公钥验证：' + verifyRSA(sign, signature))

@@ -3,7 +3,7 @@
     You should not have anything beyond basic page loads, handling forms and 
     maybe some simple program logic
 '''
-from Crypto.Hash import MD5
+# from Crypto.Hash import MD5
 from bottle import route, get, post, error, request, static_file
 
 import model
@@ -92,7 +92,7 @@ def get_register_controller():
 
         Serves the login page
     '''
-    return model.register_form();
+    return model.register_form()
 
 # check register
 #-----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ def post_register():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
-    public_key = request.forms.get('pubkey')
+    public_key = request.forms.get('pubKey')
     print(username)
     print(password)
     print(public_key)
@@ -145,12 +145,12 @@ def send_message():
 
     # Handle the form processing
 
-    sender = model.get_sender()
+    sender = request.forms.get('sender')
     message = request.forms.get('message')
     receiver = request.forms.get('receiver')
     digital_signature = request.forms.get('digital_signature')
 
-    print(digital_signature)
+    print("ds:"+digital_signature)
     print(receiver)
     print(message)
 
@@ -160,7 +160,7 @@ def send_message():
 
 
     # pass the receiver and message to the model
-    return model.send_success(receiver, message, digital_signature)
+    return model.send_success(sender,receiver, message, digital_signature)
 
 #-----------------------------------------------------------------------------
 # Send_message
@@ -212,13 +212,14 @@ def post_login():
     # hash = MD5.new()
     # hash.update(password.encode())
     # password = hash.hexdigest()
-    
+    print(password)
     # Call the appropriate method
     return model.login_check(username, password)
 
 
 
 #-----------------------------------------------------------------------------
+
 
 @get('/about')
 def get_about():

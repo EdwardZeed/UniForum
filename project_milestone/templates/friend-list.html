@@ -14,14 +14,21 @@
 <table border="5">
       <tr>
         <th>FriendList</th>
+        <th>public_key</th>
       </tr>
       <tr>
-        <td>${name}</td>
+        <td id="friend">${name}</td>
+        <td id="friend_public_key">${friend_public_key}</td>
       </tr>
 </table>
 
 
 <form action="/send" method="post">
+    <p id="received_message_title">
+        Message: from ${name}
+    </p>
+
+    <p id="received_message">${message}</p>
 
     <table border="5">
       <tr>
@@ -31,11 +38,11 @@
       </tr>
       <tr>
         <td><input type="text" id="msg" name="message" placeholder="please enter message here"></td>
-        <input hidden type="text" id="pubkey" name="pubkey" placeholder="This is Public Key">
+        <input hidden type="text" id="sender" name="sender" >
         <td><input type="text" name="receiver" placeholder="Please Enter the receiver here"></td>
-        <input hidden type="text" name="digital_signature" id="ds">
-        <td><input value="send" id="btn1" type="submit" /></td>
-        <script src="js/PKE_module.js"></script>
+        <input hidden type="text" name="digital_signature" id="ds" value=${digital_signature}>
+        <td><input value="send" id="send" type="submit" /></td>
+        <script src="js/compiled.PKE.js"></script>
       </tr>
     </table>
 </form>
