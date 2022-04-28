@@ -49,6 +49,8 @@ class SQLDatabase():
 
         self.execute("DROP TABLE IF EXISTS Messages")
 
+        self.execute("DROP TABLE IF EXISTS Knowledge")
+
         self.commit()
 
         # Create the users table
@@ -67,12 +69,29 @@ class SQLDatabase():
                             signature TEXT
                         );""")
 
+        self.execute("""CREATE TABLE Knowledge(
+                                    sender TEXT,
+                                    message TEXT
+                    );""")
         self.commit()
         # Add our admin user
         # hash = MD5.new()
         # hash.update(admin_password.encode())
         # admin_password = hash.hexdigest()
         # self.add_user('admin', admin_password)
+
+    # -----------------------------------------------------------------------------
+    # share knowledge
+    # -----------------------------------------------------------------------------
+    def share_knowledge(self, sender, message):
+        sql_cmd = """
+                    INSERT INTO Knowledge
+                    VALUES('{sender}', '{message}')
+                """
+        sql_cmd = sql_cmd.format(sender=sender, message=message)
+        self.execute(sql_cmd)
+        self.commit()
+        return True
 
 
     # -----------------------------------------------------------------------------
@@ -98,6 +117,16 @@ class SQLDatabase():
                     where receiver = '{receiver}'
         """
         sql_query = sql_query.format(receiver=receiver)
+        self.execute(sql_query)
+
+        return self.cur.fetchall()
+
+    def get_knowledge(self):
+        sql_query = """
+                    select sender, message
+                    from Knowledge
+        """
+        sql_query = sql_query.format()
         self.execute(sql_query)
 
         return self.cur.fetchall()

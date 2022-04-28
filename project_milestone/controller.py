@@ -163,6 +163,26 @@ def send_message():
     return model.send_success(sender,receiver, message, digital_signature)
 
 #-----------------------------------------------------------------------------
+# share_knowledge
+#-----------------------------------------------------------------------------
+@post('/share_knowledge')
+def share_knowledge():
+    '''
+        post_login
+
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+
+    # Call the appropriate method
+    knowledge = request.forms.get('Knowledge')
+    username = request.forms.get('username')
+
+    return model.share_knowledge(username, knowledge)
+
+#-----------------------------------------------------------------------------
 # Send_message
 #-----------------------------------------------------------------------------
 @post('/get_message')

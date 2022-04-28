@@ -96,6 +96,26 @@ def get_sender():
     '''
     return user_name_global
 
+def share_knowledge(username,message):
+    '''
+        send_message
+        Sends a message to the database
+
+        :: username :: The username
+        :: message :: The message
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    db.share_knowledge(username, message)
+    all_knowledges = db.get_knowledge()
+    text=""
+    for knowledge in all_knowledges:
+        text += knowledge[0] + ": " + knowledge[1] + ";"
+    return page_view("get_message", knowledge=text)
+
+
+    return page_view("get_message")
+
 def send_success(sender, receiver, message, signature):
 
     #encrypt message with symmetric key
@@ -132,32 +152,32 @@ def get_message():
         get_message
         Returns the view for the get_message
     '''
-    if user_name_global == db.get_sender()[0]:
-        return page_view("get-message", sender = "", message="You have no messages")
-    else:
-        try:
-            # verify signature
-            msg = db.get_messages()[0]
-            # msg_text = msg[len(msg) - 1][0]
-            # symmetric_key = msg[len(msg) - 1][1]
-            # sender = msg[len(msg) - 1][2]
-            #
-            # signature = db.getSignature(sender)
-            # signature = signature[0]
-            # signature = base64.decodebytes(signature.encode())
-            # sender_public_key = db.getPublicKey(sender)[0]
-            # msg_bytes = base64.decodebytes(msg_text.encode())
-            # rsa.verify(msg_bytes, signature, rsa.PublicKey.load_pkcs1(sender_public_key))
+    try:
+        # verify signature
+        # msg_text = msg[len(msg) - 1][0]
+        # symmetric_key = msg[len(msg) - 1][1]
+        # sender = msg[len(msg) - 1][2]
+        #
+        # signature = db.getSignature(sender)
+        # signature = signature[0]
+        # signature = base64.decodebytes(signature.encode())
+        # sender_public_key = db.getPublicKey(sender)[0]
+        # msg_bytes = base64.decodebytes(msg_text.encode())
+        # rsa.verify(msg_bytes, signature, rsa.PublicKey.load_pkcs1(sender_public_key))
 
-            # decrypt message
-            # private_key = rsa.PrivateKey.load_pkcs1((db.getPrivateKey(user_name_global)[0]).encode())
-            # symmetric_key = rsa.decrypt(base64.decodebytes(symmetric_key.encode()), private_key)
-            # cipher = AES.new(symmetric_key, AES.MODE_ECB)
-            # msg_text = cipher.decrypt(msg_bytes).decode()
-            # msg_text = msg_text.rstrip('\0')
-            return page_view("get_message", sender =db.get_sender()[0], message=msg)
-        except:
-            return page_view("get-message", sender = "", message="the message might be corrupted")
+        # decrypt message
+        # private_key = rsa.PrivateKey.load_pkcs1((db.getPrivateKey(user_name_global)[0]).encode())
+        # symmetric_key = rsa.decrypt(base64.decodebytes(symmetric_key.encode()), private_key)
+        # cipher = AES.new(symmetric_key, AES.MODE_ECB)
+        # msg_text = cipher.decrypt(msg_bytes).decode()
+        # msg_text = msg_text.rstrip('\0')
+        all_knowledge = db.get_knowledge()
+        text = ""
+        for knowledge in all_knowledge:
+            text += knowledge[0] + ": " + knowledge[1] + ";"
+        return page_view("get_message", knowledge=text)
+    except:
+        return page_view("get_message", knowledge="No one has shared knowledge yet")
 
 #-----------------------------------------------------------------------------
 # Login

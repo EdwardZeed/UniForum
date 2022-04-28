@@ -1,1 +1,31 @@
-<p>From ${sender}: ${message}</p>
+
+    <div class="box2">
+        <div class="header2"><h1>Share Knowledge</h1></div>
+        <div class="main2">
+            <div class="left2">
+                <form action="/share_knowledge" method="post" >
+
+                    <input hidden type="text" name="username" id="username" value="">
+                        <script>
+                            document.getElementById("username").value = sessionStorage.getItem("username");
+                        </script>
+                    Knowledge: <input name="Knowledge" id="Knowledge" type="Knowledge" class="Knowledge_input">
+                    <button type="submit">Share</button>
+                </form>
+                    <form action="/get_message" method="post" >
+                        <button type="submit">Refresh</button>
+                    </form>
+            </div>
+            <div class="right2">
+                <p hidden id="all_know">${knowledge}</p>
+                <p id="show"></p>
+                <script>
+                    var all_know = document.getElementById("all_know").innerHTML;
+                    var know = all_know.split(";");
+                    for(var i = 0; i < know.length; i++){
+                        document.getElementById("show").innerHTML += know[i] + "<br>";
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
