@@ -251,10 +251,13 @@ def login_check(username, password):
     err_str = "a"
     username_ls = db.getUsername()
     name_l = ""
+    all_names = ""
     if login:
         for i in username_ls:
             if username != i[0] and i[0] != "admin":
                 name_l = i[0]
+                all_names += name_l + ";"
+        print(all_names)
         set_user_name(username)
         if(username == "admin"):
             return page_view("admin")
@@ -262,7 +265,7 @@ def login_check(username, password):
             name_l = "null"
             return page_view("friend-list", name=name_l, current_user=user_name_global,
                              public_key="NUll", message="null",
-                             digital_signature="null", friend_public_key="null")
+                             digital_signature="null", friend_public_key="null", all_names=all_names)
 
 
         message = db.get_messages(username)
@@ -281,11 +284,11 @@ def login_check(username, password):
             print("no message")
             return page_view("friend-list", name=name_l, current_user=user_name_global,
                              public_key=db.getPublicKey(name_l)[0], digital_signature=digital_signature,
-                             friend_public_key=friend_public_key, message="")
+                             friend_public_key=friend_public_key, message="",all_names=all_names)
 
         return page_view("friend-list", name=name_l, current_user=user_name_global,
                          public_key=db.getPublicKey(name_l)[0], message=message_cipher,
-                         digital_signature=digital_signature, friend_public_key=friend_public_key)
+                         digital_signature=digital_signature, friend_public_key=friend_public_key,all_names=all_names)
     else:
         return page_view("invalid", reason=err_str)
 
