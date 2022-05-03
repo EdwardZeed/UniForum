@@ -51,6 +51,8 @@ class SQLDatabase():
 
         self.execute("DROP TABLE IF EXISTS Knowledge")
 
+        self.execute("DROP TABLE IF EXISTS Coursedetail")
+
         self.commit()
 
         # Create the users table
@@ -74,12 +76,18 @@ class SQLDatabase():
                                     sender TEXT,
                                     message TEXT
                     );""")
+
+        self.execute("""Create TABLE Coursedetail(
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    coursedetail TEXT 
+                    );""")
         self.commit()
 
         hash = MD5.new()
         hash.update(admin_password.encode())
         admin_password = hash.hexdigest()
         self.add_user("admin", admin_password)
+        self.add_coursedetail("test")
 
     # -----------------------------------------------------------------------------
     # share knowledge
@@ -258,6 +266,14 @@ class SQLDatabase():
                         """
         self.execute(sql_query)
         return self.cur.fetchall()
+
+    def add_coursedetail(self, coursedetail):
+        sql_cmd = """
+                        INSERT INTO Coursedetail(coursedetail)
+                        VALUES ('{coursedetail}')
+                    """
+        self.execute(sql_cmd.format(coursedetail=coursedetail))
+        self.commit()
 
 
 

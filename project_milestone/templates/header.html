@@ -11,6 +11,17 @@
   <li><a href="/login">Login</a></li>
   <li><a href="/about">About</a></li>
     <li><a href="/register">Register</a></li>
+    <li><a href="/get_message">Forum</a></li>
+    <script>
+        // function jump(){
+        //     window.location.href = "/js/get_message";
+        // }
+        var forum = document.getElementById("forum");
+        console.log(forum);
+        forum.onclick = function(){
+            window.location.href = "../templates/get_message.html";
+        }
+    </script>
 </ul>
 </p>
 <center><h2>Student Chat System</h2>
