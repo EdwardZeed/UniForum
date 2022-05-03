@@ -1,31 +1,58 @@
 
     <div class="box2">
+
         <div class="header2"><h1>Share Knowledge</h1></div>
         <div class="main2">
             <div class="left2">
                 <form action="/share_knowledge" method="post" >
 
+                    <button><a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">New Thread</a></button>
+                    <div id="light" class="white_content">
+                    Knowledge:
+                    </br>
+                    <input name="Knowledge" id="Knowledge" type="Knowledge" class="Knowledge_input">
+                    <button type="submit" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Click to share</button></div>
+                            <div id="fade" class="black_overlay"></div>
+                    </br>
                     <input hidden type="text" name="username" id="username" value="">
                         <script>
                             document.getElementById("username").value = sessionStorage.getItem("username");
                         </script>
-                    Knowledge: <input name="Knowledge" id="Knowledge" type="Knowledge" class="Knowledge_input">
-                    <button type="submit">Share</button>
                 </form>
-                    <form action="/get_message" method="post" >
-                        <button type="submit">Refresh</button>
-                    </form>
+
+                <form action="/get_message" method="post" >
+                    <button type="submit">Refresh</button>
+                </form>
+                <p id = "test_show"></p>
+                <p hidden id='all_know'>${knowledge}</p>
+                <script>
+                    var trStr = "";
+                    var all_know = document.getElementById("all_know").innerHTML;
+                    var know = all_know.split(";");
+                    for(var i = 0; i < know.length; i++){
+                        // 通过循环来生成td的字符串
+                        var tdStr = "";
+                        for (var j = 0; j < 1; j++) {
+                            tdStr += "<td class='table_knowledge_td' id='row' onclick='myFunction(this)'>"+know[i]+"</td>";
+                        }
+                        // console.log(tdStr);
+                        //判断行数的奇偶数
+                        trStr += "<tr>" + tdStr + "</tr>";
+                    }
+                    var tableStr = "<table border='1' class='table_knowledge' id='knowledge_table'>" + trStr + "</table>";
+
+                    function myFunction(x) {
+
+                        var tab=document.getElementById("knowledge_table");
+                        document.getElementById("show").innerHTML = x.innerHTML;
+                    }
+                    document.getElementById("test_show").innerHTML = tableStr;
+
+                </script>
             </div>
             <div class="right2">
                 <p hidden id="all_know">${knowledge}</p>
                 <p id="show"></p>
-                <script>
-                    var all_know = document.getElementById("all_know").innerHTML;
-                    var know = all_know.split(";");
-                    for(var i = 0; i < know.length; i++){
-                        document.getElementById("show").innerHTML += know[i] + "<br>";
-                    }
-                </script>
             </div>
         </div>
     </div>

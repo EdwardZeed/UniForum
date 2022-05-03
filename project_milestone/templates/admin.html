@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is Admin Page</title>
+</head>
+<body>
+<h2>You can mute anyone, delete anyone, delete a course guide</h2>
+<h3>Mute someone</h3>
+<form action="/admin_mute" method="post">
+    <input type="text" name="mute" placeholder="Username">
+    <input type="submit" value="Mute">
+</form>
+<h3>Delete someone</h3>
+<form action="/admin_delete" method="post">
+    <input type="text" name="delete" placeholder="Username">
+    <input type="submit" value="Delete">
+</form>
+<h3>Delete a course guide</h3>
+<form action="/admin_delete_course_guide" method="post">
+    <input type="text" name="delete_course" placeholder="Course name">
+    <input type="submit" value="Delete">
+</form>
+
+<p>${message}</p>
+</body>
+</html>

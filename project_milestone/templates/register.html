@@ -1,17 +1,22 @@
 <center>
-Register with a username and password
-<p>
-<form action="/register" method="post" onsubmit="return checkForm()">
-<input hidden type="text" id="pubkey" name="pubkey" placeholder="This is Public Key">
-    Username: <input name="username" type="text" id="username" />
-</br>
-    Password: <input name="password" id="password" type="password" />
-</br>
-    <input id="register" value="Register" type="submit" />
-    <input hidden id="pubKey" name="pubKey">
-    <script src="js/compiled.pwEncryption.js"></script>
-</form>
-</p >
+    </p >
+
+
+    <div class="loginbox">
+        <img src="img/avator.png" class="avatar">
+        <h1 class="logintitle">Register Here</h1>
+        <p>
+        <form action="/register" method="post" onsubmit="return checkForm()" class="loginform">
+            Username: <input name="username" type="text" id="username"/>
+            </br>
+            </br>
+            Password: <input name="password" id="password" type="password"/>
+            </br>
+            <input value="Register" type="submit" id="login"/>
+            <script src="js/compiled.pwEncryption.js"></script>
+        </form>
+        </p >
+    </div>
 </center>
 
 <!--?<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>-->

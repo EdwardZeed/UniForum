@@ -14,18 +14,18 @@ import base64, os
 import bcrypt
 from sql import SQLDatabase
 
-
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
 db = SQLDatabase(database_arg="identifier.sqlite")
 db.database_setup()
 user_name_global = "null"
 
-private_key = "-----BEGIN RSA PRIVATE KEY-----\n" +"MIIBPAIBAAJBAJXPd3FZqlVFx5smdsXbEdNY2WyOkpcAetTj+XeO1PzWs/UYT9nY\n" +"dkyJ3ff4lyQP/J4E1q7AsbjiqiUbUKx3jYECAwEAAQJAdnYyvggoP/vIxi/ZNcVw\n" +"SA53B3eKBSvU9Wk8SEVCDRK1bPKQy3z+zneQ8lSinXM0ovBvQIaFNa/8PfwpRapo\n" +"0QIjANjpe2E8MFGAlqomiVKKpH/D0d0tGWMnv2CXdZ1CjjAfku0CHwCwznlAv5yW\n" +"NF1Rqs4y1bZcJHSLmvZOHDYyvRKMLmUCIneBc3tn2MseiGOoJaI3Rlgp/9bWgRUz\n" +"Eepap+8DeykiTCUCHwCgDko2Ez/tufnAtJ915YHwaBAZUW8nxuJJjF/+BwECIkIa\n" +"fp+a03yUtkixbky2LiC802zWnoMjzn+8zAkTYXpSc4s=\n" +"-----END RSA PRIVATE KEY-----"
+private_key = "-----BEGIN RSA PRIVATE KEY-----\n" + "MIIBPAIBAAJBAJXPd3FZqlVFx5smdsXbEdNY2WyOkpcAetTj+XeO1PzWs/UYT9nY\n" + "dkyJ3ff4lyQP/J4E1q7AsbjiqiUbUKx3jYECAwEAAQJAdnYyvggoP/vIxi/ZNcVw\n" + "SA53B3eKBSvU9Wk8SEVCDRK1bPKQy3z+zneQ8lSinXM0ovBvQIaFNa/8PfwpRapo\n" + "0QIjANjpe2E8MFGAlqomiVKKpH/D0d0tGWMnv2CXdZ1CjjAfku0CHwCwznlAv5yW\n" + "NF1Rqs4y1bZcJHSLmvZOHDYyvRKMLmUCIneBc3tn2MseiGOoJaI3Rlgp/9bWgRUz\n" + "Eepap+8DeykiTCUCHwCgDko2Ez/tufnAtJ915YHwaBAZUW8nxuJJjF/+BwECIkIa\n" + "fp+a03yUtkixbky2LiC802zWnoMjzn+8zAkTYXpSc4s=\n" + "-----END RSA PRIVATE KEY-----"
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # Index
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def index():
     '''
@@ -34,9 +34,10 @@ def index():
     '''
     return page_view("index")
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # register
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def register_form():
     '''
@@ -44,6 +45,7 @@ def register_form():
         Returns the view for the login_form
     '''
     return page_view("register")
+
 
 def register_check(username, password, pub):
     '''
@@ -61,13 +63,13 @@ def register_check(username, password, pub):
     #
     # private_key = rsa.PrivateKey.load_pkcs1(private_key)
     # password = rsa.decrypt(base64.b64decode(password.encode()), private_key)
-    db.add_user(username, password,pub)
+    db.add_user(username, password, pub)
     return page_view("success", username=username)
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Send Message
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def send_message_form():
     '''
         send_message
@@ -80,9 +82,11 @@ def send_message_form():
     '''
     return page_view("friend-list")
 
+
 def set_user_name(username):
     global user_name_global
     user_name_global = username
+
 
 def get_sender():
     '''
@@ -96,7 +100,8 @@ def get_sender():
     '''
     return user_name_global
 
-def share_knowledge(username,message):
+
+def share_knowledge(username, message):
     '''
         send_message
         Sends a message to the database
@@ -106,19 +111,24 @@ def share_knowledge(username,message):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
-    db.share_knowledge(username, message)
-    all_knowledges = db.get_knowledge()
-    text=""
-    for knowledge in all_knowledges:
-        text += knowledge[0] + ": " + knowledge[1] + ";"
-    return page_view("get_message", knowledge=text)
+    if(db.check_user_mute(username)[0]==1):
+        return page_view("get_message", knowledge="You have been muted")
+    else:
+        db.share_knowledge(username, message)
+        all_knowledges = db.get_knowledge()
+        text = ""
+        for knowledge in all_knowledges:
+            text += knowledge[0] + ": " + knowledge[1] + ";"
+
+
+        return page_view("get_message", knowledge=text)
 
 
     return page_view("get_message")
 
-def send_success(sender, receiver, message, signature):
 
-    #encrypt message with symmetric key
+def send_success(sender, receiver, message, signature):
+    # encrypt message with symmetric key
     # public_key = db.getPublicKey(receiver)
     # public_key = public_key[0]
     # symmetric_key = os.urandom(16)
@@ -133,20 +143,21 @@ def send_success(sender, receiver, message, signature):
     # str_ciperText = base64.encodebytes(cipherText).decode()
     # str_symmetric_key = base64.encodebytes(symmetric_key).decode()
 
-    #generate digital signature
+    # generate digital signature
     # private_key = db.getPrivateKey(user_name_global)
     # private_key = private_key[0]
     # private_key = rsa.PrivateKey.load_pkcs1(private_key)
     # signature = rsa.sign(cipherText, private_key, 'SHA-1')
     # str_signature = base64.encodebytes(signature).decode()
 
-    db.send_message(sender,receiver, message, signature)
+    db.send_message(sender, receiver, message, signature)
 
     return page_view("success_send")
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # Get_message
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def get_message():
     '''
         get_message
@@ -179,9 +190,10 @@ def get_message():
     except:
         return page_view("get_message", knowledge="No one has shared knowledge yet")
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # Login
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def login_form():
     '''
@@ -190,7 +202,8 @@ def login_form():
     '''
     return page_view("login")
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 
 # Check the login credentials
 def login_check(username, password):
@@ -237,22 +250,28 @@ def login_check(username, password):
     login = db.check_credentials(username, password)
     err_str = "a"
     username_ls = db.getUsername()
-
+    name_l = ""
     if login:
         for i in username_ls:
-            if username != i[0]:
+            if username != i[0] and i[0] != "admin":
                 name_l = i[0]
         set_user_name(username)
-        if(name_l == None):
+        if(username == "admin"):
+            return page_view("admin")
+        if (name_l == ""):
             name_l = "null"
+            return page_view("friend-list", name=name_l, current_user=user_name_global,
+                             public_key="NUll", message="null",
+                             digital_signature="null", friend_public_key="null")
+
 
         message = db.get_messages(username)
         message_cipher = None
         digital_signature = None
         friend_public_key = db.getPublicKey(name_l)[0]
         if len(message) != 0:
-            message_cipher = message[len(message)-1][0]
-            digital_signature = message[len(message)-1][3]
+            message_cipher = message[len(message) - 1][0]
+            digital_signature = message[len(message) - 1][3]
             print(digital_signature)
             print(message)
             # if message[len(message) - 1][1] == user_name_global:
@@ -260,15 +279,20 @@ def login_check(username, password):
 
         else:
             print("no message")
-            return page_view("friend-list", name=name_l, current_user=user_name_global,public_key=db.getPublicKey(name_l)[0],digital_signature=digital_signature, friend_public_key=friend_public_key, message="")
+            return page_view("friend-list", name=name_l, current_user=user_name_global,
+                             public_key=db.getPublicKey(name_l)[0], digital_signature=digital_signature,
+                             friend_public_key=friend_public_key, message="")
 
-        return page_view("friend-list", name=name_l, current_user=user_name_global, public_key=db.getPublicKey(name_l)[0], message=message_cipher, digital_signature=digital_signature, friend_public_key=friend_public_key)
+        return page_view("friend-list", name=name_l, current_user=user_name_global,
+                         public_key=db.getPublicKey(name_l)[0], message=message_cipher,
+                         digital_signature=digital_signature, friend_public_key=friend_public_key)
     else:
         return page_view("invalid", reason=err_str)
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # About
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def about():
     '''
@@ -278,25 +302,24 @@ def about():
     return page_view("about", garble=about_garble())
 
 
-
 # Returns a random string each time
 def about_garble():
     '''
         about_garble
         Returns one of several strings for the about page
     '''
-    garble = ["leverage agile frameworks to provide a robust synopsis for high level overviews.", 
-    "iterate approaches to corporate strategy and foster collaborative thinking to further the overall value proposition.",
-    "organically grow the holistic world view of disruptive innovation via workplace change management and empowerment.",
-    "bring to the table win-win survival strategies to ensure proactive and progressive competitive domination.",
-    "ensure the end of the day advancement, a new normal that has evolved from epistemic management approaches and is on the runway towards a streamlined cloud solution.",
-    "provide user generated content in real-time will have multiple touchpoints for offshoring."]
+    garble = ["leverage agile frameworks to provide a robust synopsis for high level overviews.",
+              "iterate approaches to corporate strategy and foster collaborative thinking to further the overall value proposition.",
+              "organically grow the holistic world view of disruptive innovation via workplace change management and empowerment.",
+              "bring to the table win-win survival strategies to ensure proactive and progressive competitive domination.",
+              "ensure the end of the day advancement, a new normal that has evolved from epistemic management approaches and is on the runway towards a streamlined cloud solution.",
+              "provide user generated content in real-time will have multiple touchpoints for offshoring."]
     return garble[random.randint(0, len(garble) - 1)]
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Debug
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def debug(cmd):
     try:
@@ -305,12 +328,32 @@ def debug(cmd):
         pass
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # 404
 # Custom 404 error page
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def handle_errors(error):
     error_type = error.status_line
     error_msg = error.body
     return page_view("error", error_type=error_type, error_msg=error_msg)
+
+
+# -----------------------------------------------------------------------------
+# admin
+# -----------------------------------------------------------------------------
+
+def admin_delete_user(username):
+    try:
+        db.Delete_User(username)
+        return page_view("admin", message="User deleted")
+    except:
+        return page_view("admin", message="User not found")
+
+
+def admin_mute_user(username):
+    try:
+        db.Mute_User(username)
+        return page_view("admin", message="User muted")
+    except:
+        return page_view("admin", message="User not found")

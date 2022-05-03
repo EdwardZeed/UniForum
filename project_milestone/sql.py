@@ -59,7 +59,8 @@ class SQLDatabase():
             username TEXT,
             password TEXT,
             admin INTEGER DEFAULT 0,
-            pubkey TEXT
+            pubkey TEXT,
+            is_muted INTEGER DEFAULT 0
         );""")
 
         self.execute("""CREATE TABLE Messages(
@@ -74,11 +75,11 @@ class SQLDatabase():
                                     message TEXT
                     );""")
         self.commit()
-        # Add our admin user
-        # hash = MD5.new()
-        # hash.update(admin_password.encode())
-        # admin_password = hash.hexdigest()
-        # self.add_user('admin', admin_password)
+
+        hash = MD5.new()
+        hash.update(admin_password.encode())
+        admin_password = hash.hexdigest()
+        self.add_user("admin", admin_password)
 
     # -----------------------------------------------------------------------------
     # share knowledge
@@ -146,22 +147,24 @@ class SQLDatabase():
     # -----------------------------------------------------------------------------
 
     # Add a user to the database
-    def add_user(self, username, password, pubkey=None, admin=0):
+    def add_user(self, username, password, pubkey=None, admin=0,is_muted=0):
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin}, '{pubkey}')
+                VALUES({id}, '{username}', '{password}', {admin}, '{pubkey}', '{is_muted}')
             """
 
-        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin, pubkey=pubkey)
+        sql_cmd = sql_cmd.format(id=self.id, username=username, password=password, admin=admin, pubkey=pubkey, is_muted=is_muted)
         self.id += 1
         self.execute(sql_cmd)
         self.commit()
+
         return True
 
     # -----------------------------------------------------------------------------
 
     # Check login credentials
     def check_credentials(self, username, password):
+        print(username, password)
         sql_query = """
                 SELECT 1
                 FROM Users
@@ -217,5 +220,44 @@ class SQLDatabase():
 
         self.execute(sql_query.format(username=username))
         return self.cur.fetchone()
+
+
+    def Delete_User(self, username):
+        sql_cmd = """
+                    DELETE FROM Users WHERE username = '{username}'
+                """
+
+        self.execute(sql_cmd.format(username=username))
+        self.execute(sql_cmd)
+        self.commit()
+        return True
+
+    def Mute_User(self, username):
+        sql_cmd = """
+                    UPDATE Users SET is_muted = 1 WHERE username = '{username}'
+                """
+
+        self.execute(sql_cmd.format(username=username))
+        self.execute(sql_cmd)
+        self.commit()
+        return True
+
+    def check_user_mute(self, username):
+        sql_query = """
+                            SELECT is_muted 
+                            FROM Users
+                            WHERE username = '{username}'
+                        """
+        self.execute(sql_query.format(username=username))
+        return self.cur.fetchone()
+
+    def get_all_knowledge(self):
+        sql_query = """
+                            select *    
+                            from Knowledge
+                        """
+        self.execute(sql_query)
+        return self.cur.fetchall()
+
 
 

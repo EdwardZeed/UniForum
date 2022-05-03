@@ -239,6 +239,32 @@ def post_login():
 
 
 #-----------------------------------------------------------------------------
+#Admin_delete_user
+#-----------------------------------------------------------------------------
+@post('/admin_delete')
+def admin_delete_user():
+    '''
+
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('delete')
+
+    # Call the appropriate method
+    return model.admin_delete_user(username)
+
+@post('/admin_mute')
+def admin_delete_user():
+    '''
+
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('mute')
+
+    # Call the appropriate method
+    return model.admin_mute_user(username)
+
 
 
 @get('/about')
