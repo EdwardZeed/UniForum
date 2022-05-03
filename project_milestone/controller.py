@@ -182,6 +182,10 @@ def share_knowledge():
 
     return model.share_knowledge(username, knowledge)
 
+@get('/get_message')
+def get_message_controller():
+    return model.get_message_form()
+
 #-----------------------------------------------------------------------------
 # Send_message
 #-----------------------------------------------------------------------------

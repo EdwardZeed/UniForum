@@ -190,6 +190,12 @@ def get_message():
     except:
         return page_view("get_message", knowledge="No one has shared knowledge yet")
 
+def get_message_form():
+    '''
+        get_message_form
+        Returns the view for the get_message_form
+    '''
+    return page_view("get_message")
 
 # -----------------------------------------------------------------------------
 # Login
