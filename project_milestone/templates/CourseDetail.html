@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light Theme</title>
+<link rel="stylesheet" type="text/css" href="css/CourseGuide.css">
+<script src="js/script_head.js"></script>
+</head>
+<body>
+<!-- Main Container -->
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <h4 class="logo">CourseDetail</h4>
+  </header>
+  <!-- Hero Section -->
+  <section class="intro">
+    <div class="column">
+      <h3>USYD</h3>
+	  <img src="img/USYD-Logo.png" width="200" height="" alt=""/> </div>
+    <div class="column">
+      <p>We have many courses to choose from whether you’re starting out, looking to improve your career prospects, or pursuing a passion.</p>
+    </div>
+  </section>
+  <!-- Stats Gallery Section -->
+    <p hidden id="couse_detail">${Detail}</p>
+  <div class="gallery" id="gallery">
+
+    </div>
+    <script>
+
+        var Detail = document.getElementById("couse_detail").innerHTML;
+        alert(Detail);
+        var detail_array = Detail.split(";");
+
+    // var trStr = "";
+    // var all_know = document.getElementById("all_know").innerHTML;
+    // var know = all_know.split(";");
+        for(var i = 0; i < detail_array.length - 1; i++){
+            var trStr = "";
+            var name = detail_array[i].split(":")[0];
+            var detail = detail_array[i].split(":")[1];
+            trStr += "<div class='thumbnail' id='thumbnail'>";
+            trStr += "<h4>"+name+"</h4>";
+            trStr += "<p class='text_column'>"+ detail +"</p>";
+            trStr += "</div>";
+            document.getElementById("gallery").innerHTML += trStr;
+        }
+
+    </script>
+
+
+
+
+      <script>
+
+      </script>
+  <!-- Footer Section -->
+  <footer id="contact">
+    <p class="hero_header">GET IN TOUCH WITH ME</p>
+    <div class="button">EMAIL ME </div>
+  </footer>
+  <!-- Copyrights Section -->
+  <div class="copyright">&copy;2021 - <strong>CourseDetail</strong></div>
+</div>
+<!-- Main Container Ends -->
+</body>
+</html>

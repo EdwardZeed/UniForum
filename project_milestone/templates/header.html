@@ -12,13 +12,18 @@
   <li><a href="/about">About</a></li>
     <li><a href="/register">Register</a></li>
     <li><a id="forum">Forum</a></li>
+    <li><a id="CourseDetail">CourseDetail</a></li>
     <script>
         const check_login = sessionStorage.getItem('username');
         if (check_login != null){
             var forum = document.getElementById("forum");
+            var CourseDetail = document.getElementById("CourseDetail");
             console.log(forum);
             forum.onclick = function () {
                 window.location.href = "/get_message";
+            }
+            CourseDetail.onclick = function () {
+                window.location.href = "/CourseDetail";
             }
         }
     </script>

@@ -269,6 +269,10 @@ def admin_delete_user():
     # Call the appropriate method
     return model.admin_mute_user(username)
 
+@get("/CourseDetail")
+def CourseDetail():
+    return model.CourseDetail()
+
 
 
 @get('/about')
@@ -280,6 +284,17 @@ def get_about():
     '''
     return model.about()
 #-----------------------------------------------------------------------------
+@post('/admin_delete_course_guide')
+def admin_delete_course_guide():
+    '''
+
+    '''
+
+    # Handle the form processing
+    course_guide = request.forms.get('delete_course')
+
+    # Call the appropriate method
+    return model.admin_delete_course_guide(course_guide)
 
 # Help with debugging
 @post('/debug/<cmd:path>')

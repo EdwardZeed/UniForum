@@ -79,6 +79,7 @@ class SQLDatabase():
 
         self.execute("""Create TABLE Coursedetail(
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    course_name TEXT,
                                     coursedetail TEXT 
                     );""")
         self.commit()
@@ -87,7 +88,10 @@ class SQLDatabase():
         hash.update(admin_password.encode())
         admin_password = hash.hexdigest()
         self.add_user("admin", admin_password)
-        self.add_coursedetail("test")
+        self.add_coursedetail("INFO2222", "This is a test course")
+        self.add_coursedetail("INFO2223", "This is a test course")
+        self.add_coursedetail("INFO2224", "This is a test course")
+        self.add_coursedetail("INFO2225", "This is a test course")
 
     # -----------------------------------------------------------------------------
     # share knowledge
@@ -267,13 +271,30 @@ class SQLDatabase():
         self.execute(sql_query)
         return self.cur.fetchall()
 
-    def add_coursedetail(self, coursedetail):
+    def add_coursedetail(self, course_name,coursedetail):
         sql_cmd = """
-                        INSERT INTO Coursedetail(coursedetail)
-                        VALUES ('{coursedetail}')
+                        INSERT INTO Coursedetail(course_name,coursedetail)
+                        VALUES ('{course_name}','{coursedetail}')
                     """
-        self.execute(sql_cmd.format(coursedetail=coursedetail))
+        self.execute(sql_cmd.format(course_name=course_name, coursedetail=coursedetail))
         self.commit()
+
+    def get_coursedetail(self):
+        sql_query = """
+                                    select *
+                                    from Coursedetail
+                                """
+        self.execute(sql_query)
+        return self.cur.fetchall()
+
+    def Delete_Course_Guide(self, course_guide):
+        sql_cmd = """
+                            DELETE FROM Coursedetail WHERE course_name = '{course_guide}'
+                        """
+        self.execute(sql_cmd.format(course_guide=course_guide))
+        self.execute(sql_cmd)
+        self.commit()
+        return True
 
 
 

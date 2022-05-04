@@ -366,3 +366,21 @@ def admin_mute_user(username):
         return page_view("admin", message="User muted")
     except:
         return page_view("admin", message="User not found")
+
+
+def CourseDetail():
+    coursedetail = db.get_coursedetail()
+    text = ""
+    for i in coursedetail:
+        text += i[1] + ": " + i[2] + ";"
+    print(text)
+    return page_view("CourseDetail", Detail=text)
+
+
+def admin_delete_course_guide(course_guide):
+    try:
+        db.Delete_Course_Guide(course_guide)
+        return page_view("admin", message="Course Guide deleted")
+    except:
+        return page_view("admin", message="Course Guide not found")
+    return None
