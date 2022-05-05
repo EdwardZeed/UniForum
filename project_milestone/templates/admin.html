@@ -22,6 +22,22 @@
     <input type="submit" value="Delete">
 </form>
 
+<h3>Delete a career</h3>
+<form action="/Delete_Career" method="post">
+    <input type="text" name="delete_career" placeholder="Career id">
+    <input type="submit" value="Delete Career">
+</form>
+
+<h3>Add a career</h3>
+<form action="/Add_Career" method="post">
+    <input type="text" name="name" placeholder="Career name">
+    </br>
+    <input type="text" name="detail" placeholder="Career Detail">
+    </br>
+    <input type="submit" value="Add Career">
+</form>
+
+
 <p>${message}</p>
 </body>
 </html>

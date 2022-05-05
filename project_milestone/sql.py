@@ -53,6 +53,8 @@ class SQLDatabase():
 
         self.execute("DROP TABLE IF EXISTS Coursedetail")
 
+        self.execute("DROP TABLE IF EXISTS Career")
+
         self.commit()
 
         # Create the users table
@@ -82,6 +84,12 @@ class SQLDatabase():
                                     course_name TEXT,
                                     coursedetail TEXT 
                     );""")
+
+        self.execute("""Create TABLE Career(
+                                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                            career_name TEXT,
+                                            careerdetail TEXT 
+                    );""")
         self.commit()
 
         hash = MD5.new()
@@ -92,6 +100,11 @@ class SQLDatabase():
         self.add_coursedetail("INFO2223", "This is a test course")
         self.add_coursedetail("INFO2224", "This is a test course")
         self.add_coursedetail("INFO2225", "This is a test course")
+
+        self.add_career("Software Engineering", "This is a test career. SE is a great career")
+        self.add_career("Data Science", "This is a test career. DS is a great career")
+        self.add_career("Computer Science", "This is a test caree. CS is a great career")
+        self.add_career("Information System", "This is a test career. IS is a great career")
 
     # -----------------------------------------------------------------------------
     # share knowledge
@@ -295,6 +308,33 @@ class SQLDatabase():
         self.execute(sql_cmd)
         self.commit()
         return True
+
+    def add_career(self, career, careerdetail):
+        sql_cmd = """
+                                    INSERT INTO Career(career_name,careerdetail)
+                                    VALUES ('{career}','{careerdetail}')
+                                """
+        self.execute(sql_cmd.format(career=career, careerdetail=careerdetail))
+        self.commit()
+        return True
+
+    def get_all_career(self):
+        sql_query = """
+                                    select *
+                                    from Career
+                                """
+        self.execute(sql_query)
+        return self.cur.fetchall()
+
+    def Delete_Career(self, id):
+        sql_cmd = """
+                                    DELETE FROM Career WHERE id = '{id}'
+                                """
+        self.execute(sql_cmd.format(id = id))
+        self.execute(sql_cmd)
+        self.commit()
+        return True
+
 
 
 

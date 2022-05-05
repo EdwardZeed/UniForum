@@ -1,0 +1,66 @@
+
+<title>Light Theme</title>
+<link rel="stylesheet" type="text/css" href="css/CourseGuide.css">
+<script src="js/script_head.js"></script>
+</head>
+<body>
+<!-- Main Container -->
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <h4 class="logo">Careee Hub</h4>
+  </header>
+  <!-- Hero Section -->
+  <section class="intro">
+    <div class="column">
+      <h3>USYD</h3>
+	  <img src="img/USYD-Logo.png" width="200" height="" alt=""/> </div>
+    <div class="column">
+      <p>We have many courses to choose from whether you’re starting out, looking to improve your career prospects, or pursuing a passion.</p>
+    </div>
+  </section>
+  <!-- Stats Gallery Section -->
+    <p hidden id="career_detail">${Detail}</p>
+  <div class="gallery" id="gallery">
+      <form action="/careerdetail" method="post" >
+          <input hidden name="username" type="text" id="username" value="abcd"/>
+          <input value="login" type="submit" id="login"/>
+      </form>
+
+    </div>
+    <script>
+
+        var Detail = document.getElementById("career_detail").innerHTML;
+        alert(Detail);
+        var detail_array = Detail.split(";");
+
+    // var trStr = "";
+    // var all_know = document.getElementById("all_know").innerHTML;
+    // var know = all_know.split(";");
+        for(var i = 0; i < detail_array.length - 1; i++){
+            var trStr = "";
+            var name = detail_array[i].split(":")[0];
+            var detail = detail_array[i].split(":")[1];
+            trStr += "<div class='thumbnail' id='thumbnail'>";
+            trStr += "<h4>"+name+"</h4>";
+            trStr += "<p class='text_column'>"+ detail +"</p>";
+            trStr += "<form action='/careerdetail' method='post' >";
+            trStr += '<input hidden name="username" type="text" id="username" value="'+detail+'">';
+            trStr += " <input value='See Detail' type='submit' id='login' />";
+            trStr += "</form>";
+            trStr += "</div>";
+            document.getElementById("gallery").innerHTML += trStr;
+        }
+
+    </script>
+
+  <!-- Footer Section -->
+  <footer id="contact">
+    <p class="hero_header">GET IN TOUCH WITH ME</p>
+    <div class="button">EMAIL ME </div>
+  </footer>
+  <!-- Copyrights Section -->
+  <div class="copyright">&copy;2021 - <strong>CourseDetail</strong></div>
+</div>
+<!-- Main Container Ends -->
+</body>

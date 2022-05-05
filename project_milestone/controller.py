@@ -273,6 +273,15 @@ def admin_delete_user():
 def CourseDetail():
     return model.CourseDetail()
 
+@get("/CareerHub")
+def CareerHub():
+    return model.CareerHub()
+
+@post("/careerdetail")
+def CareerDetail():
+    username = request.forms.get('username')
+    return model.CareerDetail(username)
+
 
 
 @get('/about')
@@ -295,6 +304,29 @@ def admin_delete_course_guide():
 
     # Call the appropriate method
     return model.admin_delete_course_guide(course_guide)
+
+@post('/Delete_Career')
+def admin_delete_course_guide():
+    '''
+
+    '''
+
+    # Handle the form processing
+    career = request.forms.get('delete_career')
+
+    # Call the appropriate method
+    return model.admin_delete_career(career)
+
+@post('/Add_Career')
+def admin_add_career():
+    '''
+
+    '''
+
+    # Handle the form processing
+    name = request.forms.get('name')
+    detail = request.forms.get('detail')
+    return model.admin_add_career(name, detail)
 
 # Help with debugging
 @post('/debug/<cmd:path>')

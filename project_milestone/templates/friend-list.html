@@ -11,7 +11,6 @@
 <!--?</form>-->
 <!--?</p>-->
 
-f
 
 
 <form action="/send" method="post">
@@ -28,34 +27,16 @@ f
                     var all_know = document.getElementById("all_friends").innerHTML;
                     var know = all_know.split(";");
                     for(var i = 0; i < know.length; i++){
-                        // 通过循环来生成td的字符串
                         var tdStr = "";
                         for (var j = 0; j < 1; j++) {
                             tdStr += "<td class='table_knowledge_td' id='row''>"+know[i]+"</td>";
                         }
-                        // console.log(tdStr);
-                        //判断行数的奇偶数
                         trStr += "<tr>" + tdStr + "</tr>";
                     }
                     var tableStr = "<table border='1' class='table_knowledge' id='knowledge_table'>" + trStr + "</table>";
                     document.getElementById("show_all_freind").innerHTML = tableStr;
 
                     </script>
-
-
-
-                        <table border="1" class="friend_table">
-                              <tr>
-                                <th>FriendList</th>
-
-                              </tr>
-                              <tr>
-                                <td id="friend">${name}</td>
-                                <td hidden id="friend_public_key">${friend_public_key}</td>
-                              </tr>
-                        </table>
-
-
 
 
                     </div>

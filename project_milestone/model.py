@@ -370,6 +370,7 @@ def admin_mute_user(username):
 
 def CourseDetail():
     coursedetail = db.get_coursedetail()
+    print(coursedetail)
     text = ""
     for i in coursedetail:
         text += i[1] + ": " + i[2] + ";"
@@ -384,3 +385,34 @@ def admin_delete_course_guide(course_guide):
     except:
         return page_view("admin", message="Course Guide not found")
     return None
+
+
+def CareerHub():
+    careerhub = db.get_all_career()
+    print(careerhub)
+    text = ""
+    for i in careerhub:
+        text += i[1] + ": " + i[2] + ";"
+    print(text)
+    return page_view("CareerHub", Detail=text)
+
+
+def CareerDetail(name):
+    print(name)
+    return page_view("CareerDetail", Detail=name)
+
+
+def admin_delete_career(career):
+    try:
+        db.Delete_Career(career)
+        return page_view("admin", message="Career deleted")
+    except:
+        return page_view("admin", message="Career not found")
+
+
+def admin_add_career(name, detail):
+    try:
+        db.add_career(name, detail)
+        return page_view("admin", message="Career added")
+    except:
+        return page_view("admin", message="Career not added")
